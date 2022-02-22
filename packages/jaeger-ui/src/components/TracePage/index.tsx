@@ -48,7 +48,7 @@ import { EmbeddedState } from '../../types/embedded';
 import filterSpans from '../../utils/filter-spans';
 import updateUiFind from '../../utils/update-ui-find';
 
-import {sampleTrace} from './sampleTrace';
+import {sampleTrace} from '../App/sampleTrace';
 
 import './index.css';
 
