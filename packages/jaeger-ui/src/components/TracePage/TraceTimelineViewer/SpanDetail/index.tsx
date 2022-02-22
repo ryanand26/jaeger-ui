@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import React from 'react';
-import { Divider } from 'antd';
 
 import AccordianKeyValues from './AccordianKeyValues';
 import AccordianLogs from './AccordianLogs';
@@ -21,7 +20,6 @@ import AccordianReferences from './AccordianReferences';
 import AccordianText from './AccordianText';
 import DetailState from './DetailState';
 import { formatDuration } from '../utils';
-import CopyIcon from '../../../common/CopyIcon';
 import LabeledList from '../../../common/LabeledList';
 
 import { TNil } from '../../../../types';
@@ -98,7 +96,7 @@ export default function SpanDetail(props: SpanDetailProps) {
           items={overviewItems}
         />
       </div>
-      <Divider className="SpanDetail--divider ub-my1" />
+      <hr className="SpanDetail--divider ub-my1" />
       <div>
         <div>
           <AccordianKeyValues
@@ -152,12 +150,12 @@ export default function SpanDetail(props: SpanDetailProps) {
           )}
         <small className="SpanDetail--debugInfo">
           <span className="SpanDetail--debugLabel" data-label="SpanID:" /> {spanID}
-          <CopyIcon
+          {/* <CopyIcon
             copyText={deepLinkCopyText}
             icon="link"
             placement="topRight"
             tooltipTitle="Copy deep link to this span"
-          />
+          /> */}
         </small>
       </div>
     </div>

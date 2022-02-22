@@ -15,29 +15,14 @@
 import React, { Component } from 'react';
 import createHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
 
-import NotFound from './NotFound';
-import Page from './Page';
-import DependencyGraph from '../DependencyGraph';
-import { ROUTE_PATH as dependenciesPath } from '../DependencyGraph/url';
-import DeepDependencies from '../DeepDependencies';
-import { ROUTE_PATH as deepDependenciesPath } from '../DeepDependencies/url';
-import QualityMetrics from '../QualityMetrics';
-import { ROUTE_PATH as qualityMetricsPath } from '../QualityMetrics/url';
-import SearchTracePage from '../SearchTracePage';
-import { ROUTE_PATH as searchPath } from '../SearchTracePage/url';
-import TraceDiff from '../TraceDiff';
-import { ROUTE_PATH as traceDiffPath } from '../TraceDiff/url';
 import TracePage from '../TracePage';
-import { ROUTE_PATH as tracePath } from '../TracePage/url';
-import MonitorATMPage from '../Monitor';
-import { ROUTE_PATH as monitorATMPath } from '../Monitor/url';
+
 import JaegerAPI, { DEFAULT_API_ROOT } from '../../api/jaeger';
 import configureStore from '../../utils/configure-store';
-import processScripts from '../../utils/config/process-scripts';
-import prefixUrl from '../../utils/prefix-url';
+//import processScripts from '../../utils/config/process-scripts';
 
 import '../common/vars.css';
 import '../common/utils.css';
@@ -50,30 +35,14 @@ export default class JaegerUIApp extends Component {
     super(props);
     this.store = configureStore(history);
     JaegerAPI.apiRoot = DEFAULT_API_ROOT;
-    processScripts();
+    //processScripts();
   }
 
   render() {
     return (
       <Provider store={this.store}>
         <ConnectedRouter history={history}>
-          <Page>
-            <Switch>
-              <Route path={searchPath} component={SearchTracePage} />
-              <Route path={traceDiffPath} component={TraceDiff} />
-              <Route path={tracePath} component={TracePage} />
-              <Route path={dependenciesPath} component={DependencyGraph} />
-              <Route path={deepDependenciesPath} component={DeepDependencies} />
-              <Route path={qualityMetricsPath} component={QualityMetrics} />
-              <Route path={monitorATMPath} component={MonitorATMPage} />
-
-              <Redirect exact path="/" to={searchPath} />
-              <Redirect exact path={prefixUrl()} to={searchPath} />
-              <Redirect exact path={prefixUrl('/')} to={searchPath} />
-
-              <Route component={NotFound} />
-            </Switch>
-          </Page>
+          <Route component={TracePage} />
         </ConnectedRouter>
       </Provider>
     );

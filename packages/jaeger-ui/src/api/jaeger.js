@@ -109,7 +109,7 @@ const JaegerAPI = {
     });
   },
   fetchServices() {
-    return getJSON(`${this.apiRoot}services`);
+    return {}; //getJSON(`${this.apiRoot}services`);
   },
   fetchTrace(id) {
     return getJSON(`${this.apiRoot}traces/${id}`);

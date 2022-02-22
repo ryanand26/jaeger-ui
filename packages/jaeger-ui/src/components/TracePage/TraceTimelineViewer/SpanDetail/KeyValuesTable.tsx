@@ -14,9 +14,6 @@
 
 import * as React from 'react';
 import jsonMarkup from 'json-markup';
-import { Dropdown, Icon, Menu } from 'antd';
-
-import CopyIcon from '../../../common/CopyIcon';
 
 import { TNil } from '../../../../types';
 import { KeyValuePair, Link } from '../../../../types/trace';
@@ -65,7 +62,7 @@ function formatValue(value: any) {
 
 export const LinkValue = (props: { href: string; title?: string; children: React.ReactNode }) => (
   <a href={props.href} title={props.title} target="_blank" rel="noopener noreferrer">
-    {props.children} <Icon className="KeyValueTable--linkIcon" type="export" />
+    {props.children}
   </a>
 );
 
@@ -74,15 +71,15 @@ LinkValue.defaultProps = {
 };
 
 const linkValueList = (links: Link[]) => (
-  <Menu>
+  <ul>
     {links.map(({ text, url }, index) => (
       // `index` is necessary in the key because url can repeat
       // eslint-disable-next-line react/no-array-index-key
-      <Menu.Item key={`${url}-${index}`}>
+      <li key={`${url}-${index}`}>
         <LinkValue href={url}>{text}</LinkValue>
-      </Menu.Item>
+      </li>
     ))}
-  </Menu>
+  </ul>
 );
 
 type KeyValuesTableProps = {
@@ -111,11 +108,12 @@ export default function KeyValuesTable(props: KeyValuesTableProps) {
             } else if (links && links.length > 1) {
               valueMarkup = (
                 <div>
-                  <Dropdown overlay={linkValueList(links)} placement="bottomRight" trigger={['click']}>
+                  {/* <Dropdown overlay={linkValueList(links)} placement="bottomRight" trigger={['click']}>
                     <a>
-                      {jsonTable} <Icon className="KeyValueTable--linkIcon" type="profile" />
+                      {jsonTable}
                     </a>
-                  </Dropdown>
+                  </Dropdown> */}
+                  {jsonTable}
                 </div>
               );
             } else {
@@ -128,11 +126,7 @@ export default function KeyValuesTable(props: KeyValuesTableProps) {
                 <td className="KeyValueTable--keyColumn">{row.key}</td>
                 <td>{valueMarkup}</td>
                 <td className="KeyValueTable--copyColumn">
-                  <CopyIcon
-                    className="KeyValueTable--copyIcon"
-                    copyText={JSON.stringify(row, null, 2)}
-                    tooltipTitle="Copy JSON"
-                  />
+                  
                 </td>
               </tr>
             );

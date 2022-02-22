@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TExample } from '../ExamplesLink';
+//import { TExample } from '../ExamplesLink';
 
 export type TStyledValue = {
   linkTo?: string;
@@ -29,7 +29,7 @@ export type TColumnDef = {
 
 export type TColumnDefs = (string | TColumnDef)[];
 
-export type TRow = Record<string, TStyledValue | string | number | TExample[]>;
+export type TRow = Record<string, TStyledValue | string | number | any[]>;
 
 export type TDetails = string | string[] | TRow[];
 

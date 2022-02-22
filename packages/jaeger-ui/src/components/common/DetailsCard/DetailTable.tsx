@@ -17,7 +17,7 @@ import { Icon, Table } from 'antd';
 import FaFilter from 'react-icons/lib/fa/filter.js';
 import _isEmpty from 'lodash/isEmpty';
 
-import ExamplesLink, { TExample } from '../ExamplesLink';
+// import ExamplesLink, { TExample } from '../ExamplesLink';
 import DetailTableDropdown from './DetailTableDropdown';
 
 import { TColumnDef, TColumnDefs, TFilterDropdownProps, TRow, TStyledValue } from './types';
@@ -52,7 +52,7 @@ export const _onFilter = (dataIndex: string) => (value: string, row: TRow) => {
 // exported for tests
 export const _renderCell = (cellData: undefined | string | TStyledValue) => {
   if (!cellData || typeof cellData !== 'object') return cellData;
-  if (Array.isArray(cellData)) return <ExamplesLink examples={cellData} />;
+  if (Array.isArray(cellData)) return 'no example links [Ryan]';
   if (!cellData.linkTo) return cellData.value;
   return (
     <a href={cellData.linkTo} target="_blank" rel="noopener noreferrer">
@@ -130,7 +130,7 @@ export const _makeColumns = ({ defs, rows }: { defs: TColumnDefs; rows: TRow[] }
 export const _rowKey = (row: TRow) =>
   JSON.stringify(row, function replacer(
     key: string,
-    value: TRow | undefined | string | number | TStyledValue | TExample[]
+    value: TRow | undefined | string | number | TStyledValue | any[]
   ) {
     function isRow(v: typeof value): v is TRow {
       return v === row;

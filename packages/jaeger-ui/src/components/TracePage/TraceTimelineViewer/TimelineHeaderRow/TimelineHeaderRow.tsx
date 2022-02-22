@@ -15,7 +15,6 @@
 import * as React from 'react';
 
 import VerticalResizer from '../../../common/VerticalResizer';
-import TimelineCollapser from './TimelineCollapser';
 import TimelineViewingLayer from './TimelineViewingLayer';
 import Ticks from '../Ticks';
 import TimelineRow from '../TimelineRow';
@@ -27,11 +26,9 @@ type TimelineHeaderRowProps = {
   duration: number;
   nameColumnWidth: number;
   numTicks: number;
-  onCollapseAll: () => void;
-  onCollapseOne: () => void;
+
   onColummWidthChange: (width: number) => void;
-  onExpandAll: () => void;
-  onExpandOne: () => void;
+
   updateNextViewRangeTime: (update: ViewRangeTimeUpdate) => void;
   updateViewRangeTime: TUpdateViewRangeTimeFunction;
   viewRangeTime: IViewRangeTime;
@@ -42,11 +39,8 @@ export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
     duration,
     nameColumnWidth,
     numTicks,
-    onCollapseAll,
-    onCollapseOne,
     onColummWidthChange,
-    onExpandAll,
-    onExpandOne,
+
     updateViewRangeTime,
     updateNextViewRangeTime,
     viewRangeTime,
@@ -56,12 +50,6 @@ export default function TimelineHeaderRow(props: TimelineHeaderRowProps) {
     <TimelineRow className="TimelineHeaderRow">
       <TimelineRow.Cell className="ub-flex ub-px2" width={nameColumnWidth}>
         <h3 className="TimelineHeaderRow--title">Service &amp; Operation</h3>
-        <TimelineCollapser
-          onCollapseAll={onCollapseAll}
-          onExpandAll={onExpandAll}
-          onCollapseOne={onCollapseOne}
-          onExpandOne={onExpandOne}
-        />
       </TimelineRow.Cell>
       <TimelineRow.Cell width={1 - nameColumnWidth}>
         <TimelineViewingLayer

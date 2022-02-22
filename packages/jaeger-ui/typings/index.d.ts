@@ -13,3 +13,4 @@
 // limitations under the License.
 
 /// <reference path="custom.d.ts" />
+declare module 'viz.js/viz.js';

@@ -19,7 +19,7 @@ module.exports = function setupProxy(app) {
   app.use(
     proxy('/api', {
       target: 'http://localhost:16686',
-      logLevel: 'silent',
+      //logLevel: 'silent',
       secure: false,
       changeOrigin: true,
       ws: true,
@@ -29,7 +29,7 @@ module.exports = function setupProxy(app) {
   app.use(
     proxy('/analytics', {
       target: 'http://localhost:16686',
-      logLevel: 'silent',
+      //logLevel: 'silent',
       secure: false,
       changeOrigin: true,
       ws: true,
@@ -39,7 +39,7 @@ module.exports = function setupProxy(app) {
   app.use(
     proxy('/serviceedges', {
       target: 'http://localhost:16686',
-      logLevel: 'silent',
+      //logLevel: 'silent',
       secure: false,
       changeOrigin: true,
       ws: true,
@@ -49,7 +49,7 @@ module.exports = function setupProxy(app) {
   app.use(
     proxy('/qualitymetrics-v2', {
       target: 'http://localhost:16686',
-      logLevel: 'silent',
+      //logLevel: 'silent',
       secure: false,
       changeOrigin: true,
       ws: true,

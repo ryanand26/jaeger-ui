@@ -96,11 +96,7 @@ export class TraceTimelineViewerImpl extends React.PureComponent<TProps> {
           duration={trace.duration}
           nameColumnWidth={spanNameColumnWidth}
           numTicks={NUM_TICKS}
-          onCollapseAll={this.collapseAll}
-          onCollapseOne={this.collapseOne}
           onColummWidthChange={setSpanNameColumnWidth}
-          onExpandAll={this.expandAll}
-          onExpandOne={this.expandOne}
           viewRangeTime={viewRange.time}
           updateNextViewRangeTime={updateNextViewRangeTime}
           updateViewRangeTime={updateViewRangeTime}

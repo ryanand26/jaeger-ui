@@ -17,11 +17,14 @@ import _get from 'lodash/get';
 import queryString from 'query-string';
 
 import CircularProgressbar from '../../components/common/CircularProgressbar';
-import {
-  PROGRESS_BAR_STROKE_WIDTH,
-  RADIUS,
-} from '../../components/DeepDependencies/Graph/DdgNodeContent/constants';
+// import {
+//   PROGRESS_BAR_STROKE_WIDTH,
+//   RADIUS,
+// } from '../../components/DeepDependencies/Graph/DdgNodeContent/constants';
 import { ReduxState } from '../../types/index';
+
+const PROGRESS_BAR_STROKE_WIDTH = 10;
+const RADIUS = 4;
 
 export type TDecorationFromState = {
   decorationID?: string;

@@ -15,14 +15,14 @@
 import { Action } from 'redux-actions';
 import { Dispatch, Store } from 'react-redux';
 
-import { middlewareHooks as searchHooks } from '../components/SearchTracePage/SearchForm.track';
+//import { middlewareHooks as searchHooks } from '../components/SearchTracePage/SearchForm.track';
 import { middlewareHooks as timelineHooks } from '../components/TracePage/TraceTimelineViewer/duck.track';
 import { isWaEnabled } from '../utils/tracking';
 import { ReduxState } from '../types';
 
 type TMiddlewareFn = (store: Store<ReduxState>, action: Action<any>) => void;
 
-const middlewareHooks: { [actionType: string]: TMiddlewareFn } = { ...timelineHooks, ...searchHooks };
+const middlewareHooks: { [actionType: string]: TMiddlewareFn } = { ...timelineHooks };
 
 function trackingMiddleware(store: Store<ReduxState>) {
   return function inner(next: Dispatch<ReduxState>) {

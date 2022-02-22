@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import * as React from 'react';
-import { Input } from 'antd';
 import { Location, History as RouterHistory } from 'history';
 import _clamp from 'lodash/clamp';
 import _get from 'lodash/get';
@@ -23,9 +22,6 @@ import { connect, Dispatch } from 'react-redux';
 import { match as Match } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
-import ArchiveNotifier from './ArchiveNotifier';
-import { actions as archiveActions } from './ArchiveNotifier/duck';
-import { trackFilter, trackFocusMatches, trackNextMatch, trackPrevMatch, trackRange } from './index.track';
 import {
   CombokeysHandler,
   merge as mergeShortcuts,
@@ -34,10 +30,7 @@ import {
 } from './keyboard-shortcuts';
 import { cancel as cancelScroll, scrollBy, scrollTo } from './scroll-page';
 import ScrollManager from './ScrollManager';
-import calculateTraceDagEV from './TraceGraph/calculateTraceDagEV';
-import TraceGraph from './TraceGraph/TraceGraph';
-import { TEv } from './TraceGraph/types';
-import { trackSlimHeaderToggle } from './TracePageHeader/TracePageHeader.track';
+
 import TracePageHeader from './TracePageHeader';
 import TraceTimelineViewer from './TraceTimelineViewer';
 import { actions as timelineActions } from './TraceTimelineViewer/duck';
@@ -47,7 +40,6 @@ import ErrorMessage from '../common/ErrorMessage';
 import LoadingIndicator from '../common/LoadingIndicator';
 import { extractUiFindFromState } from '../common/UiFindInput';
 import * as jaegerApiActions from '../../actions/jaeger-api';
-import { getUiFindVertexKeys } from '../TraceDiff/TraceDiffGraph/traceDiffGraphUtils';
 import { fetchedState } from '../../constants';
 import { FetchedTrace, ReduxState, TNil } from '../../types';
 import { Trace } from '../../types/trace';
@@ -55,14 +47,14 @@ import { TraceArchive } from '../../types/archive';
 import { EmbeddedState } from '../../types/embedded';
 import filterSpans from '../../utils/filter-spans';
 import updateUiFind from '../../utils/update-ui-find';
-import TraceStatistics from './TraceStatistics/index';
-import TraceSpanView from './TraceSpanView/index';
+
+import {sampleTrace} from './sampleTrace';
 
 import './index.css';
 
 type TDispatchProps = {
-  acknowledgeArchive: (id: string) => void;
-  archiveTrace: (id: string) => void;
+  // acknowledgeArchive: (id: string) => void;
+  // archiveTrace: (id: string) => void;
   fetchTrace: (id: string) => void;
   focusUiFindMatches: (trace: Trace, uiFind: string | TNil) => void;
 };
@@ -126,12 +118,12 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
 
   _headerElm: HTMLElement | TNil;
   _filterSpans: typeof filterSpans;
-  _searchBar: React.RefObject<Input>;
+  _searchBar: React.RefObject<any>;
   _scrollManager: ScrollManager;
-  traceDagEV: TEv | TNil;
 
   constructor(props: TProps) {
     super(props);
+
     const { embedded, trace } = props;
     this.state = {
       headerHeight: null,
@@ -243,7 +235,7 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     updateUiFind({
       history,
       location,
-      trackFindFunction: trackFilter,
+      trackFindFunction: () => {},
     });
     if (this._searchBar.current) this._searchBar.current.blur();
   };
@@ -253,9 +245,6 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
   };
 
   updateViewRangeTime: TUpdateViewRangeTimeFunction = (start: number, end: number, trackSrc?: string) => {
-    if (trackSrc) {
-      trackRange(trackSrc, [start, end], this.state.viewRange.time.current);
-    }
     const current: [number, number] = [start, end];
     const time = { current };
     this.setState((state: TState) => ({ viewRange: { ...state.viewRange, time } }));
@@ -270,25 +259,26 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
 
   toggleSlimView = () => {
     const { slimView } = this.state;
-    trackSlimHeaderToggle(!slimView);
+    
     this.setState({ slimView: !slimView });
   };
 
   setTraceView = (viewType: ETraceViewType) => {
-    if (this.props.trace && this.props.trace.data && viewType === ETraceViewType.TraceGraph) {
-      this.traceDagEV = calculateTraceDagEV(this.props.trace.data);
-    }
+    const {trace } = this.props;
+    // if (trace && trace.data && viewType === ETraceViewType.TraceGraph) {
+    //   this.traceDagEV = calculateTraceDagEV(trace.data);
+    // }
     this.setState({ viewType });
   };
 
   archiveTrace = () => {
-    const { id, archiveTrace } = this.props;
-    archiveTrace(id);
+    // const { id, archiveTrace } = this.props;
+    // archiveTrace(id);
   };
 
   acknowledgeArchive = () => {
-    const { id, acknowledgeArchive } = this.props;
-    acknowledgeArchive(id);
+    // const { id, acknowledgeArchive } = this.props;
+    // acknowledgeArchive(id);
   };
 
   ensureTraceFetched() {
@@ -306,35 +296,34 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
   focusUiFindMatches = () => {
     const { trace, focusUiFindMatches, uiFind } = this.props;
     if (trace && trace.data) {
-      trackFocusMatches();
       focusUiFindMatches(trace.data, uiFind);
     }
   };
 
   nextResult = () => {
-    trackNextMatch();
     this._scrollManager.scrollToNextVisibleSpan();
   };
 
   prevResult = () => {
-    trackPrevMatch();
     this._scrollManager.scrollToPrevVisibleSpan();
   };
 
   render() {
     const {
       archiveEnabled,
-      archiveTraceState,
       embedded,
       id,
       uiFind,
       trace,
       location: { state: locationState },
     } = this.props;
+
     const { slimView, viewType, headerHeight, viewRange } = this.state;
+
     if (!trace || trace.state === fetchedState.LOADING) {
       return <LoadingIndicator className="u-mt-vast" centered />;
     }
+
     const { data } = trace;
     if (trace.state === fetchedState.ERROR || !data) {
       return <ErrorMessage className="ub-m3" error={trace.error || 'Unknown error'} />;
@@ -343,15 +332,6 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
     let findCount = 0;
     let graphFindMatches: Set<string> | null | undefined;
     let spanFindMatches: Set<string> | null | undefined;
-    if (uiFind) {
-      if (viewType === ETraceViewType.TraceGraph) {
-        graphFindMatches = getUiFindVertexKeys(uiFind, _get(this.traceDagEV, 'vertices', []));
-        findCount = graphFindMatches ? graphFindMatches.size : 0;
-      } else {
-        spanFindMatches = this._filterSpans(uiFind, _get(trace, 'data.spans'));
-        findCount = spanFindMatches ? spanFindMatches.size : 0;
-      }
-    }
 
     const isEmbedded = Boolean(embedded);
     const headerProps = {
@@ -384,43 +364,50 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
       updateViewRangeTime: this.updateViewRangeTime,
     };
 
-    let view;
-    if (ETraceViewType.TraceTimelineViewer === viewType && headerHeight) {
-      view = (
-        <TraceTimelineViewer
-          registerAccessors={this._scrollManager.setAccessors}
-          scrollToFirstVisibleSpan={this._scrollManager.scrollToFirstVisibleSpan}
-          findMatchesIDs={spanFindMatches}
-          trace={data}
-          updateNextViewRangeTime={this.updateNextViewRangeTime}
-          updateViewRangeTime={this.updateViewRangeTime}
-          viewRange={viewRange}
-        />
-      );
-    } else if (ETraceViewType.TraceGraph === viewType && headerHeight) {
-      view = (
-        <TraceGraph
-          headerHeight={headerHeight}
-          ev={this.traceDagEV}
-          uiFind={uiFind}
-          uiFindVertexKeys={graphFindMatches}
-        />
-      );
-    } else if (ETraceViewType.TraceStatistics === viewType && headerHeight) {
-      view = <TraceStatistics trace={data} uiFindVertexKeys={spanFindMatches} uiFind={uiFind} />;
-    } else if (ETraceViewType.TraceSpansView === viewType && headerHeight) {
-      view = <TraceSpanView trace={data} uiFindVertexKeys={spanFindMatches} uiFind={uiFind} />;
-    }
+    // let view;
+    // if (ETraceViewType.TraceTimelineViewer === viewType && headerHeight) {
+    //   view = (
+    //     <TraceTimelineViewer
+    //       registerAccessors={this._scrollManager.setAccessors}
+    //       scrollToFirstVisibleSpan={this._scrollManager.scrollToFirstVisibleSpan}
+    //       findMatchesIDs={spanFindMatches}
+    //       trace={data}
+    //       updateNextViewRangeTime={this.updateNextViewRangeTime}
+    //       updateViewRangeTime={this.updateViewRangeTime}
+    //       viewRange={viewRange}
+    //     />
+    //   );
+    // } else if (ETraceViewType.TraceGraph === viewType && headerHeight) {
+    //   view = (
+    //     <TraceGraph
+    //       headerHeight={headerHeight}
+    //       ev={this.traceDagEV}
+    //       uiFind={uiFind}
+    //       uiFindVertexKeys={graphFindMatches}
+    //     />
+    //   );
+    // } else if (ETraceViewType.TraceStatistics === viewType && headerHeight) {
+    //   view = <TraceStatistics trace={data} uiFindVertexKeys={spanFindMatches} uiFind={uiFind} />;
+    // } else if (ETraceViewType.TraceSpansView === viewType && headerHeight) {
+    //   view = <TraceSpanView trace={data} uiFindVertexKeys={spanFindMatches} uiFind={uiFind} />;
+    // }
 
     return (
       <div>
-        {archiveEnabled && (
-          <ArchiveNotifier acknowledge={this.acknowledgeArchive} archivedState={archiveTraceState} />
-        )}
-        <div className="Tracepage--headerSection" ref={this.setHeaderHeight}>
+        <div className="Tracepage--headerSection-none">
           <TracePageHeader {...headerProps} />
         </div>
-        {headerHeight ? <section style={{ paddingTop: headerHeight }}>{view}</section> : null}
+          <section style={{ paddingTop: 0 }}>
+            <TraceTimelineViewer
+              registerAccessors={this._scrollManager.setAccessors}
+              scrollToFirstVisibleSpan={this._scrollManager.scrollToFirstVisibleSpan}
+              findMatchesIDs={spanFindMatches}
+              trace={data}
+              updateNextViewRangeTime={this.updateNextViewRangeTime}
+              updateViewRangeTime={this.updateViewRangeTime}
+              viewRange={viewRange}
+            />
+          </section> 
       </div>
     );
   }
@@ -430,8 +417,8 @@ export class TracePageImpl extends React.PureComponent<TProps, TState> {
 export function mapStateToProps(state: ReduxState, ownProps: TOwnProps): TReduxProps {
   const { id } = ownProps.match.params;
   const { archive, config, embedded, router } = state;
-  const { traces } = state.trace;
-  const trace = id ? traces[id] : null;
+  // const { traces } = state.trace;
+  const trace = sampleTrace; //id ? traces[id] : null;
   const archiveTraceState = id ? archive[id] : null;
   const archiveEnabled = Boolean(config.archiveEnabled);
   const { state: locationState } = router.location;
@@ -451,9 +438,9 @@ export function mapStateToProps(state: ReduxState, ownProps: TOwnProps): TReduxP
 // export for tests
 export function mapDispatchToProps(dispatch: Dispatch<ReduxState>): TDispatchProps {
   const { fetchTrace } = bindActionCreators(jaegerApiActions, dispatch);
-  const { archiveTrace, acknowledge: acknowledgeArchive } = bindActionCreators(archiveActions, dispatch);
+  //const { archiveTrace, acknowledge: acknowledgeArchive } = bindActionCreators(archiveActions, dispatch);
   const { focusUiFindMatches } = bindActionCreators(timelineActions, dispatch);
-  return { acknowledgeArchive, archiveTrace, fetchTrace, focusUiFindMatches };
+  return { fetchTrace, focusUiFindMatches };
 }
 
 export default connect(

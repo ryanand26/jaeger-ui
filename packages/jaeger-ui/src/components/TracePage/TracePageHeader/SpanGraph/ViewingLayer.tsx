@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button } from 'antd';
 import cx from 'classnames';
 import * as React from 'react';
 
@@ -286,13 +285,13 @@ export default class ViewingLayer extends React.PureComponent<ViewingLayerProps,
     return (
       <div aria-hidden className="ViewingLayer" style={{ height }}>
         {(viewStart !== 0 || viewEnd !== 1) && (
-          <Button
+          <button
             onClick={this._resetTimeZoomClickHandler}
             className="ViewingLayer--resetZoom"
-            htmlType="button"
+            type="button"
           >
             Reset Selection
-          </Button>
+          </button>
         )}
         <svg
           height={height}

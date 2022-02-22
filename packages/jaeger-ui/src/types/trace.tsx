@@ -19,6 +19,7 @@
 // TODO: Everett Tech Debt: Fix KeyValuePair types
 export type KeyValuePair = {
   key: string;
+  type?:string;
   value: any;
 };
 
@@ -66,7 +67,8 @@ export type Span = SpanData & {
   tags: NonNullable<SpanData['tags']>;
   references: NonNullable<SpanData['references']>;
   warnings: NonNullable<SpanData['warnings']>;
-  subsidiarilyReferencedBy: Array<SpanReference>;
+  subsidiarilyReferencedBy?: Array<SpanReference>;
+  flags?: any;
 };
 
 export type TraceData = {

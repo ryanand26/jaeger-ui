@@ -13,8 +13,6 @@
 // limitations under the License.
 
 import React from 'react';
-import { Dropdown, Menu, Tooltip } from 'antd';
-import { TooltipPlacement } from 'antd/lib/tooltip';
 import NewWindowIcon from '../../common/NewWindowIcon';
 import { SpanReference } from '../../../types/trace';
 
@@ -30,25 +28,26 @@ type TReferencesButtonProps = {
 
 export default class ReferencesButton extends React.PureComponent<TReferencesButtonProps> {
   referencesList = (references: SpanReference[]) => (
-    <Menu>
-      {references.map(ref => {
-        const { span, spanID } = ref;
-        return (
-          <Menu.Item key={`${spanID}`}>
-            <ReferenceLink
-              reference={ref}
-              focusSpan={this.props.focusSpan}
-              className="ReferencesButton--TraceRefLink"
-            >
-              {span
-                ? `${span.process.serviceName}:${span.operationName} - ${ref.spanID}`
-                : `(another trace) - ${ref.spanID}`}
-              {!span && <NewWindowIcon />}
-            </ReferenceLink>
-          </Menu.Item>
-        );
-      })}
-    </Menu>
+    // <Menu>
+    //   {references.map(ref => {
+    //     const { span, spanID } = ref;
+    //     return (
+    //       <Menu.Item key={`${spanID}`}>
+    //         <ReferenceLink
+    //           reference={ref}
+    //           focusSpan={this.props.focusSpan}
+    //           className="ReferencesButton--TraceRefLink"
+    //         >
+    //           {span
+    //             ? `${span.process.serviceName}:${span.operationName} - ${ref.spanID}`
+    //             : `(another trace) - ${ref.spanID}`}
+    //           {!span && <NewWindowIcon />}
+    //         </ReferenceLink>
+    //       </Menu.Item>
+    //     );
+    //   })}
+    // </Menu>
+    <span>Reference button disabled</span>
   );
 
   render() {
@@ -57,27 +56,28 @@ export default class ReferencesButton extends React.PureComponent<TReferencesBut
     const tooltipProps = {
       arrowPointAtCenter: true,
       mouseLeaveDelay: 0.5,
-      placement: 'bottom' as TooltipPlacement,
+      placement: 'bottom' as any,
       title: tooltipText,
       overlayClassName: 'ReferencesButton--tooltip',
     };
 
-    if (references.length > 1) {
-      return (
-        <Tooltip {...tooltipProps}>
-          <Dropdown overlay={this.referencesList(references)} placement="bottomRight" trigger={['click']}>
-            <a className="ReferencesButton-MultiParent">{children}</a>
-          </Dropdown>
-        </Tooltip>
-      );
-    }
-    const ref = references[0];
-    return (
-      <Tooltip {...tooltipProps}>
-        <ReferenceLink reference={ref} focusSpan={focusSpan} className="ReferencesButton-MultiParent">
-          {children}
-        </ReferenceLink>
-      </Tooltip>
-    );
+    // if (references.length > 1) {
+    //   return (
+    //     <Tooltip {...tooltipProps}>
+    //       <Dropdown overlay={this.referencesList(references)} placement="bottomRight" trigger={['click']}>
+    //         <a className="ReferencesButton-MultiParent">{children}</a>
+    //       </Dropdown>
+    //     </Tooltip>
+    //   );
+    // }
+    // const ref = references[0];
+    // return (
+    //   <Tooltip {...tooltipProps}>
+    //     <ReferenceLink reference={ref} focusSpan={focusSpan} className="ReferencesButton-MultiParent">
+    //       {children}
+    //     </ReferenceLink>
+    //   </Tooltip>
+    // );
+    return null;
   }
 }

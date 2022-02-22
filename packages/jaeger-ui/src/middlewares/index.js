@@ -14,10 +14,9 @@
 
 import promiseMiddleware from 'redux-promise-middleware';
 import { change } from 'redux-form';
-import { replace } from 'react-router-redux';
 
-import { searchTraces, fetchServiceOperations } from '../actions/jaeger-api';
-import { getUrl as getSearchUrl } from '../components/SearchTracePage/url';
+import { fetchServiceOperations } from '../actions/jaeger-api';
+//import { getUrl as getSearchUrl } from '../components/SearchTracePage/url';
 
 export { default as trackMiddleware } from './track';
 
@@ -38,10 +37,10 @@ export const loadOperationsForServiceMiddleware = store => next => action => {
 };
 
 export const historyUpdateMiddleware = store => next => action => {
-  if (action.type === String(searchTraces)) {
-    const url = getSearchUrl(action.meta.query);
-    store.dispatch(replace(url));
-  }
+  // if (action.type === String(searchTraces)) {
+  //   const url = getSearchUrl(action.meta.query);
+  //   store.dispatch(replace(url));
+  // }
   return next(action);
 };
 
